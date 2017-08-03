@@ -14,6 +14,8 @@ class TPLinkHS100 {
     }    
 
     init(){
+        let plug;
+
         TPLinkHS100xClient.on('plug-new', (plug) => {
             ['power-on', 'power-off']
                 .forEach(event => plug.on(event, plug => {
@@ -23,6 +25,10 @@ class TPLinkHS100 {
         });
 
         TPLinkHS100xClient.startDiscovery().on('plug-new', (plug) => {
+            this.app.io.on('connection', function(socket){
+                socket.on(plug.model, state => plug.setPowerState(state));
+            });
+
             setInterval(() => {
                 plug.getPowerState().then(state => emitEvent(this.app, state, plug.model));
             }, 1000);

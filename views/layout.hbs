@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>IoTDash</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -17,22 +17,27 @@
     });
 
     function buildView(device, state) {  
-      let status = state ? '<span style="color: green">ON</span>' : '<span style="color: red">OFF</span>';
+        let status = state ? '<span style="color: green">ON</span>' : '<span style="color: red">OFF</span>';
 
-      if (document.getElementById(device) === null) {
-        document.getElementById('main').innerHTML += `
-          <section id="${device}">
-            <img src="/images/${device}.png">
-            <p>${device}: ${status}</p>
-          </section>
-        `;
-      } else {
-        document.getElementById(device).innerHTML = `
-          <img src="/images/${device}.png">
-          <p>${device}: ${status}</p>
-        `;
-      }
-      
+        let negatedState = !state;
+        let buttonLabel = state ? 'Off' : 'On';
+        let button = `<button onClick="socket.emit('${device}', ${negatedState})">Switch ${buttonLabel}</button>`;
+
+        if (document.getElementById(device) === null) {
+            document.getElementById('main').innerHTML += `
+                <section id="${device}">
+                <img src="/images/${device}.png">
+                <p>${device}: ${status}</p>
+                ${button}
+                </section>
+            `;
+        } else {
+            document.getElementById(device).innerHTML = `
+                <img src="/images/${device}.png">
+                <p>${device}: ${status}</p>
+                ${button}
+            `;
+        }
     }
   </script>  
 </html>
